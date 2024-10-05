@@ -16,8 +16,8 @@ def login_view(request):
             pass
     return render(request, 'login.html')
 
-def profile_view(request):
-    return redirect('home')
+def dashboard_view(request):
+    return redirect('dashboard')
 
 def logout_view(request):
     logout(request)
