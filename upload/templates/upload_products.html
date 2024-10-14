@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Upload Products</h2>
+    {% if form.errors %}
+    <p class="text-red-500 mb-4">There was an error with the file upload. Please try again.</p>
+    {% endif %}
+    {% if error_message %}
+    <p class="text-red-500 mb-4">{{ error_message }}</p>
+    {% endif %}
+    {% if next %}
+        {% if user.is_authenticated %}
+        <p class="text-yellow-600 mb-4">Your account doesn't have access to this page. To proceed, please log in with an account that has access.</p>
+        {% else %}
+        <p class="text-yellow-600 mb-4">Please log in to upload files.</p>
+        {% endif %}
+    {% endif %}
+    <form method="post" enctype="multipart/form-data" action="{% url 'upload_products' %}" class="space-y-4">
+        {% csrf_token %}
+        <!-- File Input Field -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">{{ form.file.label_tag }}</label>
+            {{ form.file }}
+        </div>
+        <div class="text-sm text-gray-600">
+            <p>Please ensure your file contains the following column:</p>
+            <ul class="list-disc list-inside">
+                <li>product_id</li>
+                <li>product_name</li>
+            </ul>
+        </div>
+        <!-- Submit Button -->
+        <div>
+            <input type="submit" value="Upload Products" class="w-full py-2 px-4 bg-indigo-600 text-white rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none">
+        </div>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+</div>
+{% endblock %}
