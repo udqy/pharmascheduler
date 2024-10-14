@@ -10,4 +10,6 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
 
     path('upload/', include('upload.urls')),
+
+    path('schedule/', include('schedule.urls')),
 ]

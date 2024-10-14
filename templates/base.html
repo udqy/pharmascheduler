@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}My Website{% endblock %}</title>
+  <title>{% block title %}Pharmascheduler{% endblock %}</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-100">
@@ -14,13 +14,12 @@
       <!-- Logo -->
       <div class="flex items-center">
         {% comment %} <img src="{% static 'logo.png' %}" alt="Logo" class="h-10 w-10 mr-2"> {% endcomment %}
-        <span class="text-xl font-bold text-gray-800">My Website</span>
+        <span class="text-xl font-bold text-gray-800">Pharmascheduler</span>
       </div>
       
       <!-- Links -->
       <ul class="flex space-x-4">
-        <li><a href="#" class="text-gray-700 hover:text-gray-900">Dashboard</a></li>
-        <li><a href="#" class="text-gray-700 hover:text-gray-900">Profile</a></li>
+        <li><a href="#" class="text-gray-700 hover:text-gray-900">Schedule</a></li>
         <li>
           <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}

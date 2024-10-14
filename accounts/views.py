@@ -16,9 +16,6 @@ def login_view(request):
             pass
     return render(request, 'login.html')
 
-def dashboard_view(request):
-    return redirect('dashboard')
-
 def logout_view(request):
     logout(request)
     return redirect('logged_out.html')  # Redirect to your desired page after logout

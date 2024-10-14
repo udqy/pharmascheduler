@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts',
     'upload',
+    'schedule',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +129,7 @@ LOGIN_URL = '/accounts/login/'
 
 # login_redirect_url - route to redirect to after successful log in - defaults to /profile
 
-LOGIN_REDIRECT_URL = '/dashboard/'  
+LOGIN_REDIRECT_URL = '/schedule/'  
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
