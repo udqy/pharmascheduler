@@ -12,4 +12,6 @@ urlpatterns = [
     path('upload/', include('upload.urls')),
 
     path('schedule/', include('schedule.urls')),
+
+    path('inventory/', include('inventory.urls')),
 ]
