@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'accounts',
     'upload',
     'schedule',
+    'inventory',
 ]
 
 MIDDLEWARE = [
@@ -112,6 +113,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 
 # Temporary file upload directory
 TEMP_UPLOAD_DIR = os.path.join(STATIC_URL, 'temp')
