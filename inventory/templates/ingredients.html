@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Ingredients List</h2>
+    <table id="defaultTable" class="stripe hover w-full">
+        <thead>
+            <tr>
+                <th>Ingredient ID</th>
+                <th>Ingredient Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ingredient in ingredients %}
+            <tr>
+                <td>{{ ingredient.ingredient_id }}</td>
+                <td>{{ ingredient.ingredient_name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No Ingredients available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

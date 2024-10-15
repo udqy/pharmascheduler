@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Products List</h2>
+    <table id="defaultTable" class="stripe hover w-full">
+        <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.product_id }}</td>
+                <td>{{ product.product_name }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">No products available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
