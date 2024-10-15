@@ -16,7 +16,7 @@
       {% endif %}
     {% endif %}
 
-    <form method="post" enctype="multipart/form-data" action="{% url 'upload_file' %}" class="space-y-4">
+    <form method="post" enctype="multipart/form-data" class="space-y-4">
       {% csrf_token %}
       
       <!-- File Input Field -->
