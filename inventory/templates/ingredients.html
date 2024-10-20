@@ -17,7 +17,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="2">No Ingredients available.</td>
+                <td colspan="2">No Ingredients available. Please upload <a class="text-blue-500 underline hover:text-blue-700" href="{% url 'upload_ingredients' %}">here</a>.</td>
             </tr>
             {% endfor %}
         </tbody>
