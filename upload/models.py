@@ -11,7 +11,7 @@ class Product(models.Model):
         db_table = "products"
 
 class Ingredient(models.Model):
-    ingredient_id = models.AutoField(primary_key=True, default=0)
+    ingredient_id = models.AutoField(primary_key=True)
     ingredient_name = models.CharField(max_length=255, unique=True, default='')
 
     def __str__(self):
