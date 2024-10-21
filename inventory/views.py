@@ -82,13 +82,3 @@ def add_ingredient(request):
     else:
         form = IngredientForm()
     return render(request, 'ingredient/add_ingredient.html', {'form': form})
-
-
-#
-# Actions for Composition
-#
-
-@login_required
-def display_composition(request):
-    compositions = Composition.objects.all()
-    return render(request, 'composition/composition.html', {'compositions': compositions})
