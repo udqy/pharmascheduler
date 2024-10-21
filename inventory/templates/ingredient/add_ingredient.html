@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="text-2xl font-bold mb-4">Add New Ingredient</h2>
+    <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <div class="flex items-center justify-between mt-4">
+            <button type="submit" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Add Ingredient
+            </button>
+            <a href="{% url 'display_ingredients' %}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Cancel
+            </a>
+        </div>
+    </form>
+    <a href="{% url 'display_ingredients' %}" class="text-blue-500 hover:text-blue-700">Back to Ingredients List</a>
+{% endblock %}
