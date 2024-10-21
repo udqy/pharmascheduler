@@ -7,6 +7,19 @@
   {% load static %}
   <link rel="stylesheet" href="{% static 'DataTables/datatables.min.css' %}">
   <link rel="stylesheet" href="{% static 'Tailwind/tailwind.min.css' %}">
+  <style>
+    .dropdown-menu {
+      display: none;
+    }
+    .dropdown-menu.show {
+      display: block;
+    }
+    input {
+      padding: 3px;
+      border-radius: 4px;
+      box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
+    }
+  </style>
 </head>
 <body class="bg-gray-100">
 
@@ -15,32 +28,44 @@
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <!-- Logo -->
       <div class="flex items-center">
-        {% comment %} <img src="{% static 'logo.png' %}" alt="Logo" class="h-10 w-10 mr-2"> {% endcomment %}
         <span class="text-xl font-bold text-gray-800">Pharmascheduler</span>
       </div>
       
       <!-- Links -->
-      <ul class="flex space-x-4">
+      <ul class="flex space-x-4 items-center">
         <li>
           <a href="{% url 'current' %}" class="text-gray-700 hover:text-gray-900 {% if request.resolver_match.url_name == 'current' %}font-bold{% endif %}">
             Schedule
           </a>
         </li>
-        <li>
-          <a href="{% url 'display_products' %}" class="text-gray-700 hover:text-gray-900 {% if request.resolver_match.url_name == 'display_products' %}font-bold{% endif %}">
-            Products
-          </a>
+        <!-- Inventory Dropdown -->
+        <li class="dropdown relative">
+          <button class="dropdown-toggle text-gray-700 hover:text-gray-900 focus:outline-none">
+            Inventory
+            <svg class="h-4 w-4 inline-block ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <ul class="dropdown-menu absolute bg-white mt-2 py-2 w-48 rounded-lg shadow-xl z-10">
+            <li><a href="{% url 'display_products' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Products</a></li>
+            <li><a href="{% url 'display_ingredients' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Ingredients</a></li>
+          </ul>
         </li>
-        <li>
-          <a href="{% url 'display_ingredients' %}" class="text-gray-700 hover:text-gray-900 {% if request.resolver_match.url_name == 'display_ingredients' %}font-bold{% endif %}">
-            Ingredients
-          </a>
+        <!-- Upload Dropdown -->
+        <li class="dropdown relative">
+          <button class="dropdown-toggle text-gray-700 hover:text-gray-900 focus:outline-none">
+            Upload
+            <svg class="h-4 w-4 inline-block ml-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <ul class="dropdown-menu absolute bg-white mt-2 py-2 w-48 rounded-lg shadow-xl z-10">
+            <li><a href="{% url 'upload_products' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Products</a></li>
+            <li><a href="{% url 'upload_ingredients' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Ingredients</a></li>
+            <li><a href="{% url 'upload_composition' %}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Composition</a></li>
+          </ul>
         </li>
-        <li>
-          <a href="{% url 'display_composition' %}" class="text-gray-700 hover:text-gray-900 {% if request.resolver_match.url_name == 'display_composition' %}font-bold{% endif %}">
-            Composition
-          </a>
-        </li>
+        <!-- Logout -->
         <li>
           <form method="POST" action="{% url 'logout' %}">
             {% csrf_token %}
@@ -67,11 +92,30 @@
             "searching": true,
             "ordering": true,
             "info": true,
-            select: true,
             columnDefs: [{
               "defaultContent": "-",
               "targets": "_all"
             }]
+        });
+
+        $('#composition-table').DataTable({
+            "ordering": true,
+            "info": true,
+            "paging": false,
+            "searching": false,
+        });
+
+        $('.dropdown-toggle').click(function(e) {
+            e.stopPropagation();
+            $(this).siblings('.dropdown-menu').toggleClass('show');
+        });
+
+        $(document).click(function() {
+            $('.dropdown-menu').removeClass('show');
+        });
+
+        $('.dropdown-menu').click(function(e) {
+            e.stopPropagation();
         });
     });
   </script>

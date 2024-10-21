@@ -21,8 +21,8 @@ class Ingredient(models.Model):
         db_table = "ingredients"
 
 class Composition(models.Model):
-    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     quantity = models.FloatField()
 
     def __str__(self):
@@ -30,4 +30,4 @@ class Composition(models.Model):
 
     class Meta:
         db_table = "composition"
-        unique_together = ('ingredient', 'product')
+        unique_together = ('product', 'ingredient')
