@@ -4,7 +4,46 @@
     <h2 class="text-2xl font-bold mb-4">Edit Product</h2>
     <form method="post" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         {% csrf_token %}
-        {{ form.as_p }}
+        <div class="mb-4">
+            <label class="block text-2xl font-bold mb-2" for="{{ form.product_name.id_for_label }}">
+                Product Name
+            </label>
+            {{ form.product_name }}
+        </div>
+        
+        <h3 class="text-2xl font-bold mb-2">Composition</h3>
+        {{ formset.management_form }}
+        <table class="text-xl w-full mb-4" id="composition-table">
+            <thead>
+                <tr>
+                    <th class="text-left">Ingredient</th>
+                    <th class="text-left">Quantity</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for composition_form in formset %}
+                    <tr>
+                        <td class="py-2">{{ composition_form.ingredient }}</td>
+                        <td class="py-2">{{ composition_form.quantity }}</td>
+                        <td class="py-2">
+                            {% if forloop.counter > 1 %}
+                                <button type="button" class="delete-composition bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                                        data-product-id="{{ product.product_id }}"
+                                        data-ingredient-id="{{ composition_form.initial.ingredient.ingredient_id }}">
+                                    Delete
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <button type="button" id="add-ingredient" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4">
+            Add Ingredient
+        </button>
+        
         <div class="flex items-center justify-between mt-4">
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                 Save Changes
@@ -15,4 +54,95 @@
         </div>
     </form>
     <a href="{% url 'display_products' %}" class="text-blue-500 hover:text-blue-700">Back to Products List</a>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const addIngredientBtn = document.getElementById('add-ingredient');
+            const compositionTable = document.getElementById('composition-table').getElementsByTagName('tbody')[0];
+            const totalForms = document.getElementById('id_compositions-TOTAL_FORMS');
+            
+            addIngredientBtn.addEventListener('click', function() {
+                const formCount = compositionTable.children.length;
+                const newRow = compositionTable.insertRow();
+                const template = compositionTable.children[0].innerHTML;
+                newRow.innerHTML = template.replace(/-0-/g, `-${formCount}-`);
+                
+                // Add delete button to the new row
+                const deleteCell = newRow.cells[2];
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.className = 'delete-composition bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline';
+                deleteBtn.type = 'button';
+                deleteCell.appendChild(deleteBtn);
+                
+                totalForms.value = formCount + 1;
+            });
+            
+            compositionTable.addEventListener('click', function(e) {
+                if (e.target.classList.contains('delete-composition')) {
+                    const row = e.target.closest('tr');
+                    const productId = e.target.dataset.productId;
+                    const ingredientId = e.target.dataset.ingredientId;
+                    
+                    if (productId && ingredientId) {
+                        fetch(`/inventory/products/${productId}/delete-composition/${ingredientId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': getCookie('csrftoken'),
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                row.remove();
+                                updateFormIndexes();
+                            } else {
+                                alert('Failed to delete composition');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while deleting the composition');
+                        });
+                    } else {
+                        row.remove();
+                        updateFormIndexes();
+                    }
+                }
+            });
+            
+            function updateFormIndexes() {
+                const rows = compositionTable.children;
+                for (let i = 0; i < rows.length; i++) {
+                    const inputs = rows[i].getElementsByTagName('input');
+                    for (let input of inputs) {
+                        input.name = input.name.replace(/\d+/, i);
+                        input.id = input.id.replace(/\d+/, i);
+                    }
+                    const selects = rows[i].getElementsByTagName('select');
+                    for (let select of selects) {
+                        select.name = select.name.replace(/\d+/, i);
+                        select.id = select.id.replace(/\d+/, i);
+                    }
+                }
+                totalForms.value = rows.length;
+            }
+            
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
 {% endblock %}
