@@ -15,6 +15,7 @@
       display: block;
     }
     input {
+      padding: 3px;
       border-radius: 4px;
       box-shadow: rgba(0, 0, 0, 0.3) 0px 0px 0px 1px;
     }
@@ -91,11 +92,17 @@
             "searching": true,
             "ordering": true,
             "info": true,
-            select: true,
             columnDefs: [{
               "defaultContent": "-",
               "targets": "_all"
             }]
+        });
+
+        $('#composition-table').DataTable({
+            "ordering": true,
+            "info": true,
+            "paging": false,
+            "searching": false,
         });
 
         $('.dropdown-toggle').click(function(e) {
