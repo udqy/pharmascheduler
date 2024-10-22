@@ -1,5 +1,5 @@
 from django import forms
-from upload.models import Product, Ingredient, Composition, Equipment
+from upload.models import Product, Ingredient, Composition, Equipment, EquipmentProductRelation
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -26,3 +26,14 @@ class EquipmentForm(forms.ModelForm):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+
+class EquipmentProductRelationForm(forms.ModelForm):
+    equipment = forms.ModelChoiceField(
+        queryset=Equipment.objects.all(),
+        required=True,
+        widget=forms.Select(attrs={'class': 'shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'})
+    )
+
+    class Meta:
+        model = EquipmentProductRelation
+        fields = ['equipment']

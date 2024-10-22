@@ -35,7 +35,7 @@ def upload_products(request):
 
                 os.remove(file_path)
 
-                return redirect('success')
+                return redirect('display_products')
             except Exception as e:
                 return render(request, 'upload_products.html', {
                     'form': form,
@@ -73,7 +73,7 @@ def upload_ingredients(request):
 
                 os.remove(file_path)
 
-                return redirect('success')
+                return redirect('display_ingredients')
             except Exception as e:
                 return render(request, 'upload_ingredients.html', {
                     'form': form,
@@ -117,7 +117,7 @@ def upload_composition(request):
 
                 os.remove(file_path)
 
-                return redirect('success')
+                return redirect('display_composition')
             except Exception as e:
                 return render(request, 'upload_composition.html', {
                     'form': form,

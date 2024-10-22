@@ -41,3 +41,16 @@ class Equipment(models.Model):
 
     class Meta:
         db_table = "equipment"
+
+
+class EquipmentProductRelation(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=255)
+    equipment_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.product_name} - {self.equipment_name}"
+    
+    class Meta:
+        db_table = "equipment_product_relation"

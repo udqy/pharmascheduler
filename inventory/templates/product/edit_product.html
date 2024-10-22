@@ -43,6 +43,36 @@
         <button type="button" id="add-ingredient" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4">
             Add Ingredient
         </button>
+
+        {{ equipment_formset.management_form }}
+        <table class="text-xl w-full mb-4" id="equipment-table">
+            <thead>
+                <tr>
+                    <th class="text-left text-2xl font-bold mb-2">Equipment</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipment_form in equipment_formset %}
+                    <tr>
+                        <td class="py-2">{{ equipment_form.equipment }}</td>
+                        <td class="py-2">
+                            {% if forloop.counter > 1 %}
+                                <button type="button" class="delete-equipment bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                                        data-product-id="{{ product.product_id }}"
+                                        data-equipment-id="{{ equipment_form.initial.equipment.equipment_id }}">
+                                    Delete
+                                </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="button" id="add-equipment" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4">
+            Add Equipment
+        </button>
         
         <div class="flex items-center justify-between mt-4">
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
@@ -57,17 +87,22 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Existing ingredient functionality
             const addIngredientBtn = document.getElementById('add-ingredient');
             const compositionTable = document.getElementById('composition-table').getElementsByTagName('tbody')[0];
-            const totalForms = document.getElementById('id_compositions-TOTAL_FORMS');
+            const totalCompositionForms = document.getElementById('id_compositions-TOTAL_FORMS');
             
+            // New equipment functionality
+            const addEquipmentBtn = document.getElementById('add-equipment');
+            const equipmentTable = document.getElementById('equipment-table').getElementsByTagName('tbody')[0];
+            const totalEquipmentForms = document.getElementById('id_equipment-TOTAL_FORMS');
+
             addIngredientBtn.addEventListener('click', function() {
                 const formCount = compositionTable.children.length;
                 const newRow = compositionTable.insertRow();
                 const template = compositionTable.children[0].innerHTML;
                 newRow.innerHTML = template.replace(/-0-/g, `-${formCount}-`);
                 
-                // Add delete button to the new row
                 const deleteCell = newRow.cells[2];
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = 'Delete';
@@ -75,45 +110,74 @@
                 deleteBtn.type = 'button';
                 deleteCell.appendChild(deleteBtn);
                 
-                totalForms.value = formCount + 1;
+                totalCompositionForms.value = formCount + 1;
+            });
+
+            addEquipmentBtn.addEventListener('click', function() {
+                const formCount = equipmentTable.children.length;
+                const newRow = equipmentTable.insertRow();
+                const template = equipmentTable.children[0].innerHTML;
+                newRow.innerHTML = template.replace(/-0-/g, `-${formCount}-`);
+                
+                const deleteCell = newRow.cells[1];
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'Delete';
+                deleteBtn.className = 'delete-equipment bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline';
+                deleteBtn.type = 'button';
+                deleteCell.appendChild(deleteBtn);
+                
+                totalEquipmentForms.value = formCount + 1;
             });
             
-            compositionTable.addEventListener('click', function(e) {
+            // Handle deletion for both ingredients and equipment
+            document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('delete-composition')) {
-                    const row = e.target.closest('tr');
-                    const productId = e.target.dataset.productId;
-                    const ingredientId = e.target.dataset.ingredientId;
-                    
-                    if (productId && ingredientId) {
-                        fetch(`/inventory/products/${productId}/delete-composition/${ingredientId}/`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': getCookie('csrftoken'),
-                                'Content-Type': 'application/json',
-                            },
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.status === 'success') {
-                                row.remove();
-                                updateFormIndexes();
-                            } else {
-                                alert('Failed to delete composition');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('An error occurred while deleting the composition');
-                        });
-                    } else {
-                        row.remove();
-                        updateFormIndexes();
-                    }
+                    handleDelete(e, compositionTable, totalCompositionForms, 'composition');
+                } else if (e.target.classList.contains('delete-equipment')) {
+                    handleDelete(e, equipmentTable, totalEquipmentForms, 'equipment');
                 }
             });
+
+            function handleDelete(e, table, totalForms, type) {
+                const row = e.target.closest('tr');
+                const productId = e.target.dataset.productId;
+                const itemId = type === 'composition' ? 
+                    e.target.dataset.ingredientId : 
+                    e.target.dataset.equipmentId;
+                
+                if (productId && itemId) {
+                    const url = type === 'composition' ?
+                        `/inventory/products/${productId}/delete-composition/${itemId}/` :
+                        `/inventory/products/${productId}/delete-equipment/${itemId}/`;
+                    
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'Content-Type': 'application/json',
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            row.remove();
+                            updateFormIndexes(table, totalForms);
+                        } else {
+                            alert(`Failed to delete ${type}`);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert(`An error occurred while deleting the ${type}`);
+                    });
+                } else {
+                    row.remove();
+                    updateFormIndexes(table, totalForms);
+                }
+            }
             
-            function updateFormIndexes() {
-                const rows = compositionTable.children;
+            function updateFormIndexes(table, totalForms) {
+                const rows = table.children;
                 for (let i = 0; i < rows.length; i++) {
                     const inputs = rows[i].getElementsByTagName('input');
                     for (let input of inputs) {
