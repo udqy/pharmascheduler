@@ -1,5 +1,5 @@
 from django import forms
-from upload.models import Product, Ingredient, Composition
+from upload.models import Product, Ingredient, Composition, Equipment
 
 class ProductForm(forms.ModelForm):
     class Meta:
@@ -18,3 +18,11 @@ class CompositionForm(forms.ModelForm):
     class Meta:
         model = Composition
         fields = ['ingredient', 'quantity']
+
+class EquipmentForm(forms.ModelForm):
+    class Meta:
+        model = Equipment
+        fields = ['equipment_name']
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()

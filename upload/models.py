@@ -31,3 +31,13 @@ class Composition(models.Model):
     class Meta:
         db_table = "composition"
         unique_together = ('product', 'ingredient')
+
+class Equipment(models.Model):
+    equipment_id = models.AutoField(primary_key=True)
+    equipment_name = models.CharField(max_length=255, unique=True, default='')
+
+    def __str__(self):
+        return self.equipment_name
+
+    class Meta:
+        db_table = "equipment"

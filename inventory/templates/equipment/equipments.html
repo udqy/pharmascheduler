@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Equipments List</h2>
+    <div class="mt-4">
+        <a href="{% url 'add_equipment' %}" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Add New Equipment</a>
+    </div>
+    <table id="defaultTable" class="stripe hover w-full">
+        <thead>
+            <tr>
+                <th>Equipment ID</th>
+                <th>Equipment Name</th>
+                <th>Operation</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for equipment in equipments %}
+            <tr>
+                <td>{{ equipment.equipment_id }}</td>
+                <td>{{ equipment.equipment_name }}</td>
+                <td>
+                    <a href="{% url 'edit_equipment' equipment.equipment_id %}" class="text-blue-500 hover:text-blue-700">Edit</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No equipment available. Please upload <a class="text-blue-500 underline hover:text-blue-700" href="{% url 'upload_equipments' %}">here</a>.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

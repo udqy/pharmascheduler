@@ -2,8 +2,8 @@ from django.forms import formset_factory
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
-from inventory.forms import CompositionForm, ProductForm, IngredientForm
-from upload.models import Product, Ingredient, Composition
+from inventory.forms import CompositionForm, ProductForm, IngredientForm, EquipmentForm
+from upload.models import Product, Ingredient, Composition, Equipment
 
 #
 # Actions for Products
@@ -133,3 +133,44 @@ def delete_composition(request, product_id, ingredient_id):
         composition.delete()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'error'}, status=400)
+
+
+#
+# For equipments
+#
+
+@login_required
+def display_equipments(request):
+    equipments = Equipment.objects.all()
+    return render(request, 'equipment/equipments.html', {'equipments': equipments})
+
+@login_required
+def add_equipment(request):
+    if request.method == 'POST':
+        form = EquipmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('display_equipments')
+    else:
+        form = EquipmentForm()
+    return render(request, 'equipment/add_equipment.html', {'form': form})
+
+@login_required
+def edit_equipment(request, equipment_id):
+    equipment = get_object_or_404(Equipment, equipment_id=equipment_id)
+    if request.method == 'POST':
+        form = EquipmentForm(request.POST, instance=equipment)
+        if form.is_valid():
+            form.save()
+            return redirect('display_equipments')
+    else:
+        form = EquipmentForm(instance=equipment)
+    return render(request, 'equipment/edit_equipment.html', {'form': form, 'equipment': equipment})
+
+@login_required
+def delete_equipment(request, equipment_id):
+    equipment = get_object_or_404(Equipment, equipment_id=equipment_id)
+    if request.method == 'POST':
+        equipment.delete()
+        return redirect('display_equipments')
+    return render(request, 'equipment/confirm_delete_equipment.html', {'equipment': equipment})
