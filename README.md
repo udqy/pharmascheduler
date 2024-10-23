@@ -1,5 +1,7 @@
 # pharmascheduler
-An ML based Django application for scheduling the production of pharmaceutical products in a factory
+A Django application for scheduling the production of pharmaceutical products in a factory.
+
+Demo data can be found in `static/demoData`.
 
 Setup:
 ```bash
