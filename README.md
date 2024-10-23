@@ -1,5 +1,7 @@
-# pharmascheduler
+# Pharmascheduler
 A Django application for scheduling the production of pharmaceutical products in a factory.
+
+PharmaScheduler helps prioritize production based on equipment availability, production quantities, and completion times.
 
 Demo data can be found in `static/demoData`.
 
